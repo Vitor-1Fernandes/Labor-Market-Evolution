@@ -50,7 +50,7 @@ def getData(title):
         except:
             pass
         try:
-            dataDict["Human Development Index"] = float(data["entities"][wikiDataId]["claims"]["P1081"][-1]["mainsnak"]["datavalue"]["value"]["amount"])
+            dataDict["Human Development Index"] = data["entities"][wikiDataId]["claims"]["P1081"][-1]["mainsnak"]["datavalue"]["value"]["amount"]
         except:
             pass
         try:
@@ -96,7 +96,7 @@ def ApresentaDado(dict, prop):
     for keys in dict.keys():
         data = dict[keys][prop] 
         try:
-            print(f"{keys} - População = {int(data)}")
+            print(f"{keys} - {prop} = {(data)}")
         except:
             print(f"{keys} não possui essa informação registrada na wikpedia")
 
@@ -107,31 +107,35 @@ def ApresentaPais(dict, prop):
             return print(f"\n {dict[keys]}\n")
     return print(prop, "não foi encontrado na lista de países")
 
+def functionByChoice(defName, dict):
+    choice = input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
+    if choice == "1":
+        choice ="Gross Domestic Product"
+    if choice == "2":
+        choice ="Human Development Index"
+    if choice == "3":
+        choice ="Unemployement Rate"
+    if choice == "4":
+        choice ="Retirement Age"
+    if choice == "5":
+        choice ="Population"
+    if defName == "ApresentaDado":
+        ApresentaDado(dict, choice)
+    
+
 def userInput(listCountries):
     listChoice = input("Você deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
 
     if listChoice == "1":
         listCountries = input("\nInsira o nome dos países separados por vírgulas e sem espaço\n").split(',')
-
     choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n ")
     if choice == "1":
         prop = input("\n Insira o nome de um país presente na lista de países\n para visualizar todos os dados disponíveis \n")
-        dict = buscaPaises(listCountries, False)
-        ApresentaPais(dict, prop)
+        dictionary = buscaPaises(listCountries, False)
+        ApresentaPais(dictionary, prop)
     if choice == "2":
-        prop = input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Devlopment Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
-        if prop == "1":
-            prop ="Gross Domestic Product"
-        if prop == "2":
-            prop ="Human Devlopment"
-        if prop == "3":
-            prop ="Unemployement Rate"
-        if prop == "4":
-            prop ="Retirement Age"
-        if prop == "5":
-            prop ="Population"
-        dict = buscaPaises(listCountries, False)
-        ApresentaDado(dict, prop)
+        dictionary = buscaPaises(listCountries, False)
+        functionByChoice("ApresentaDado", dictionary)
 
 
 userInput(listCountries)
