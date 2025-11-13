@@ -236,7 +236,7 @@ def userInput(listCountries):
         listChoice = input("Você deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
     if listChoice == "1":
         listCountries = input("\nInsira o nome dos países separados por vírgulas e sem espaço\n ").split(',')
-    choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-Apresenta MediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
+    choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-ApresentaMediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
     while choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
         choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-Apresenta MediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
 
