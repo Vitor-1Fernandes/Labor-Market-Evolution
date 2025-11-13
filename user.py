@@ -50,7 +50,7 @@ def getData(title):
         except:
             pass
         try:
-            dataDict["Human Development Index"] = data["entities"][wikiDataId]["claims"]["P1081"][-1]["mainsnak"]["datavalue"]["value"]["amount"]
+            dataDict["Human Development Index"] = float(data["entities"][wikiDataId]["claims"]["P1081"][-1]["mainsnak"]["datavalue"]["value"]["amount"])
         except:
             pass
         try:
@@ -92,20 +92,115 @@ def buscaPaises(listNames, willPrint):
 
 listCountries = ["Brasil", "Argentina", "Peru", "Chile", "México", "Canadá", "Estados Unidos", "Cuba", "Alemanha", "França", "Itália", "Espanha", "China", "Japão", "Índia", "Coreia do Sul", "Egito", "África do Sul", "Nigéria", "Angola"]
 
-def ApresentaDado(dict, prop):
+def pegaDado(dict, prop):
+    dataList = []
+    nameCountries = []
     for keys in dict.keys():
-        data = dict[keys][prop] 
-        try:
-            print(f"{keys} - {prop} = {(data)}")
-        except:
-            print(f"{keys} não possui essa informação registrada na wikpedia")
+        dataList.append(dict[keys][prop]) 
+        nameCountries.append(keys)
+    return dataList, nameCountries
 
+def soma(data):
+    result = 0
+    for num in data:
+        result = result + num
+    return result
 
 def ApresentaPais(dict, prop):
     for keys in dict.keys():
         if keys.lower() == prop.lower():
             return print(f"\n {dict[keys]}\n")
     return print(prop, "não foi encontrado na lista de países")
+
+def ApresentaDado(dict, prop):
+        dataList = pegaDado(dict, prop)[0]
+        nameCountries = pegaDado(dict, prop)[1]
+        for count in range(len(dataList)):
+            if dataList[count] != "" and dataList[count] != " " and dataList[count] != None:
+                print(f"{nameCountries[count]} - {prop} = {(dataList[count]):,}")
+
+            else: print(f"{nameCountries[count]} não possui essa informação registrada na wikpedia")
+
+def ApresentaMedia(dict, prop, willPrint=True):
+    rawDataList = pegaDado(dict, prop)[0]
+    dataList = []
+    for count in range(len(rawDataList)):
+        if rawDataList[count] != "" and rawDataList[count] != " " and rawDataList[count] != None:
+            dataList.append(float(rawDataList[count]))
+    if (willPrint):
+        try:
+            print(f'A média do indicador {prop} entre os países da lista é {(soma(dataList)/len(dataList)):,}\n{len(dataList)} de {len(rawDataList)} paises possuem {prop} registrado')
+        except ZeroDivisionError:
+            print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
+            quit()
+    else:
+        try:
+            media=soma(dataList)/len(dataList)
+            return(media, dataList)
+        except ZeroDivisionError:
+            print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
+            quit()
+
+def MediaPonderada(dict, prop):
+    rawDataList = pegaDado(dict, prop)[0]
+    popList = pegaDado(dict, "Population")[0]
+    dataList = []
+    for count in range(len(rawDataList)):
+        if rawDataList[count] != "" and rawDataList[count] != " " and rawDataList[count] != None:
+            dataList.append(float(rawDataList[count]) * float(popList[count]))
+    dataListSoma = soma(dataList)
+    divisor = soma(popList)
+    try:
+        print(f"a Média ponderada de {prop}, com peso relativo à população é {dataListSoma/divisor:,}")
+    except ZeroDivisionError:
+        print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
+        quit()
+
+def Variancia(dict, prop):
+    media, rawDataList = ApresentaMedia(dict, prop, willPrint=False)
+    dataListList = []
+    dataList = 0
+
+    countValues = 0
+    for values in range(len(rawDataList)):
+        if (rawDataList[values] == "" or rawDataList[values] == " " or rawDataList[values] == None):
+            pass
+        else: 
+            dataListList.append(rawDataList[values])
+            countValues += 1
+
+    for count in range(len(dataListList)):
+            dataList = dataList + (float((dataListList[count] - media)**2))
+    print(f" A taxa de variância do indicador {prop} é de {dataList/countValues:,} entre os países selecionados")
+
+def Amplitude(dict, prop):
+    rawDataList = pegaDado(dict, prop)[0]
+    nameList = pegaDado(dict, prop)[1]
+    dataList = []
+    dataListNames = []
+
+    countValues = 0
+    for values in range(len(rawDataList)):
+        if (rawDataList[values] == "" or rawDataList[values] == " " or rawDataList[values] == None):
+            pass
+        else: 
+            dataList.append(rawDataList[values])
+            dataListNames.append(nameList[values])
+            countValues += 1
+        
+    if countValues < 2:
+        print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
+        quit()
+
+    biggest = max(dataList)
+    smallest = min(dataList)
+
+    biggestName = dataListNames[dataList.index(biggest)]
+    smallestName = dataListNames[dataList.index(smallest)]
+
+    amplitude = biggest - smallest 
+
+    print(f"A amplitude do indicador {prop} é de {amplitude:,},\nsendo {smallestName} o menor = {smallest:,} e {biggestName:,} o maior = {biggest}")
 
 def functionByChoice(defName, dict):
     choice = input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
@@ -121,14 +216,21 @@ def functionByChoice(defName, dict):
         choice ="Population"
     if defName == "ApresentaDado":
         ApresentaDado(dict, choice)
+    if defName == "ApresentaMedia":
+        ApresentaMedia(dict, choice)
+    if defName == "MediaPonderada":
+        MediaPonderada(dict, choice)
+    if defName == "Variancia":
+        Variancia(dict, choice)
+    if defName == "Amplitude":
+        Amplitude(dict, choice)
     
 
 def userInput(listCountries):
     listChoice = input("Você deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
-
     if listChoice == "1":
         listCountries = input("\nInsira o nome dos países separados por vírgulas e sem espaço\n").split(',')
-    choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n ")
+    choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-Apresenta MediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
     if choice == "1":
         prop = input("\n Insira o nome de um país presente na lista de países\n para visualizar todos os dados disponíveis \n")
         dictionary = buscaPaises(listCountries, False)
@@ -136,6 +238,18 @@ def userInput(listCountries):
     if choice == "2":
         dictionary = buscaPaises(listCountries, False)
         functionByChoice("ApresentaDado", dictionary)
+    if choice == "3":
+        dictionary = buscaPaises(listCountries, False)
+        functionByChoice("ApresentaMedia", dictionary)
+    if choice == "4":
+        dictionary = buscaPaises(listCountries, False)
+        functionByChoice("MediaPonderada", dictionary)
+    if choice == "5":
+        dictionary = buscaPaises(listCountries, False)
+        functionByChoice("Variancia", dictionary)
+    if choice == "6":
+        dictionary = buscaPaises(listCountries, False)
+        functionByChoice("Amplitude", dictionary)
 
 
 userInput(listCountries)
