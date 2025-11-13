@@ -16,7 +16,7 @@ def getData(title):
     }
 
     def getProps(url, params, header, title):
-        rawData = requests.get(url, params=params, headers=header)
+        rawData = requests.get(url, params=params, headers=header,  verify=False)
         try:
             data = rawData.json()
             wikiPage = list(data["query"]["pages"].keys())
@@ -36,7 +36,7 @@ def getData(title):
             "Population":"",
         }
 
-        rawData = requests.get(url, params=params, headers=header)
+        rawData = requests.get(url, params=params, headers=header,  verify=False)
 
         data = rawData.json()
         try:
