@@ -129,7 +129,7 @@ def ApresentaMedia(dict, prop, willPrint=True):
             dataList.append(float(rawDataList[count]))
     if (willPrint):
         try:
-            print(f'A média do indicador {prop} entre os países da lista é {(soma(dataList)/len(dataList)):,}\n{len(dataList)} de {len(rawDataList)} paises possuem {prop} registrado')
+            print(f'A média do indicador {prop} entre os países da lista é {(soma(dataList)/len(dataList)):,.2f}\n{len(dataList)} de {len(rawDataList)} paises possuem {prop} registrado')
         except ZeroDivisionError:
             print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
             quit()
@@ -144,14 +144,16 @@ def ApresentaMedia(dict, prop, willPrint=True):
 def MediaPonderada(dict, prop):
     rawDataList = pegaDado(dict, prop)[0]
     popList = pegaDado(dict, "Population")[0]
+    popNewList = []
     dataList = []
     for count in range(len(rawDataList)):
         if rawDataList[count] != "" and rawDataList[count] != " " and rawDataList[count] != None:
             dataList.append(float(rawDataList[count]) * float(popList[count]))
+            popNewList.append(float(popList[count]))
     dataListSoma = soma(dataList)
-    divisor = soma(popList)
+    divisor = soma(popNewList)
     try:
-        print(f"a Média ponderada de {prop}, com peso relativo à população é {dataListSoma/divisor:,}")
+        print(f"a Média Ponderada de {prop}, com peso relativo à população é {dataListSoma/divisor:,.2f}")
     except ZeroDivisionError:
         print("Não foi possível captar informações suficientes sobre os países selecionados, impossibilitando o cálculo dessa função")
         quit()
@@ -171,7 +173,7 @@ def Variancia(dict, prop):
 
     for count in range(len(dataListList)):
             dataList = dataList + (float((dataListList[count] - media)**2))
-    print(f" A taxa de variância do indicador {prop} é de {dataList/countValues:,} entre os países selecionados")
+    print(f" A taxa de variância do indicador {prop} é de {dataList/countValues:.2f} entre os países selecionados")
 
 def Amplitude(dict, prop):
     rawDataList = pegaDado(dict, prop)[0]
@@ -200,10 +202,12 @@ def Amplitude(dict, prop):
 
     amplitude = biggest - smallest 
 
-    print(f"A amplitude do indicador {prop} é de {amplitude:,},\nsendo {smallestName} o menor = {smallest:,} e {biggestName:,} o maior = {biggest}")
+    print(f"A amplitude do indicador {prop} é de {amplitude:,.2f},\nsendo {smallestName} o menor = {smallest:,.2f} e {biggestName} o maior = {biggest:,.2f}")
 
 def functionByChoice(defName, dict):
     choice = input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
+    while choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5":
+        input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
     if choice == "1":
         choice ="Gross Domestic Product"
     if choice == "2":
@@ -227,10 +231,15 @@ def functionByChoice(defName, dict):
     
 
 def userInput(listCountries):
-    listChoice = input("Você deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
+    listChoice = input("\nVocê deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
+    while listChoice != "1" and listChoice != "2":
+        listChoice = input("Você deseja criar uma lista de países?\nInsira sua resposta \n1-Sim\n2-Não\n ")
     if listChoice == "1":
-        listCountries = input("\nInsira o nome dos países separados por vírgulas e sem espaço\n").split(',')
+        listCountries = input("\nInsira o nome dos países separados por vírgulas e sem espaço\n ").split(',')
     choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-Apresenta MediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
+    while choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
+        choice = input("\nQual função você deseja testar?\n1-ApresentaPais()\n2-ApresentaDado()\n3-ApresentaMedia()\n4-Apresenta MediaPonderada()\n5-Variância()\n6-Amplitude()\n ")
+
     if choice == "1":
         prop = input("\n Insira o nome de um país presente na lista de países\n para visualizar todos os dados disponíveis \n")
         dictionary = buscaPaises(listCountries, False)
