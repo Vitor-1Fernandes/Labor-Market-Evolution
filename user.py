@@ -2,13 +2,10 @@ import requests
 
 def getData(title):
 
-    # Define um agente para autilizar a API sem bloqueio na requisição
     header = {"User-Agent": "VitorLaborMarketData/1.0 (vitorfernandes11122006@gmail.com)"}
 
-    # Link para utilização da API
     url = "https://pt.wikipedia.org/w/api.php"
 
-    # Configuração da busca
     params = {
         "action": "query",
         "format": "json",
@@ -18,7 +15,6 @@ def getData(title):
         "explaintext": 1,
     }
 
-    # getProps acessa a página da wikipedia e retorna a id para buscarmos os dados em outra requisição
     def getProps(url, params, header, title):
         rawData = requests.get(url, params=params, headers=header)
         try:
@@ -29,10 +25,8 @@ def getData(title):
         except:
             print(title, " não foi encontrado na Wikipedia")
 
-    # dataRequest busca os dados utilizando a id retornada pela getProps
     def dataRequest(url, params, header, wikiDataId, title):
 
-        # Dicionário que receberá os dados
         dataDict = {
             "Country": title,
             "Gross Domestic Product":"", 
@@ -67,9 +61,8 @@ def getData(title):
             pass
         return dataDict
     
-    # API para requisição dos dados
     urlData = "https://www.wikidata.org/w/api.php"
-    # Configuração da busca dos dados
+
     wikiDataId = getProps(url, params, header, title)
     paramsData = {
         "action": "wbgetentities",
