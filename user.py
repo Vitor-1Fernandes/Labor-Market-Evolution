@@ -1,4 +1,5 @@
 import requests
+import matplotlib.pyplot as plt
 
 def getData(title):
 
@@ -85,12 +86,25 @@ def buscaPaises(listNames, willPrint):
 
 listCountries = ["Brasil", "Argentina", "Peru", "Chile", "México", "Canadá", "Estados Unidos", "Cuba", "Alemanha", "França", "Itália", "Espanha", "China", "Japão", "Índia", "Coreia do Sul", "Egito", "África do Sul", "Nigéria", "Angola"]
 
+# def plotGraph(paises, valores):
+#     plt.figure(figsize=(10,6))
+#     plt.plot(paises,valores, 'r--')
+#     plt.legend("População em Bilhões")
+#     plt.grid(True)
+#     plt.show()
+
+
 def pegaDado(dict, prop):
     dataList = []
     nameCountries = []
+    listadata=[]
     for keys in dict.keys():
         dataList.append(dict[keys][prop]) 
         nameCountries.append(keys)
+    # # for num in dataList:
+    # #     valor = int(num)
+    #     # listadata.append(valor)  
+    # plotGraph(nameCountries, listadata)
     return dataList, nameCountries
 
 def soma(data):
