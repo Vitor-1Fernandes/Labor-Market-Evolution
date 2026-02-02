@@ -1,5 +1,7 @@
 import requests
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def getData(title):
 
@@ -84,27 +86,46 @@ def buscaPaises(listNames, willPrint):
     return dictCountries
 
 
-listCountries = ["Brasil", "Argentina", "Peru", "Chile", "México", "Canadá", "Estados Unidos", "Cuba", "Alemanha", "França", "Itália", "Espanha", "China", "Japão", "Índia", "Coreia do Sul", "Egito", "África do Sul", "Nigéria", "Angola"]
+listCountries = ["Brasil", "Argentina", "Peru", "Chile", "México", "Canadá", "Estados Unidos"]
 
-# def plotGraph(paises, valores):
-#     plt.figure(figsize=(10,6))
-#     plt.plot(paises,valores, 'r--')
-#     plt.legend("População em Bilhões")
-#     plt.grid(True)
-#     plt.show()
+def plotGraph(paises, valores, legenda):
+    plt.figure(figsize=(10,10))
+    plt.plot(paises,valores, 'r--')
+    plt.title(legenda)
+    plt.ylabel(f"{legenda}")
+    plt.xlabel("Paises")
+    plt.legend(legenda)
+    plt.grid(True)
+    plt.show()
 
 
 def pegaDado(dict, prop):
     dataList = []
     nameCountries = []
-    listadata=[]
     for keys in dict.keys():
-        dataList.append(dict[keys][prop]) 
+        dataList.append(float(dict[keys][prop])) 
         nameCountries.append(keys)
-    # # for num in dataList:
-    # #     valor = int(num)
-    #     # listadata.append(valor)  
-    # plotGraph(nameCountries, listadata)
+
+    if max(dataList) > 100:
+        legenda = "Centenas"
+    if max(dataList) > 1000:
+        legenda = "Milhares"
+    if max(dataList) > 10000:
+        legenda = "Dezenas de Milhares"
+    if max(dataList) > 100000:
+        legenda = "Centenas de Milhares"
+    if max(dataList) > 1000000:
+        legenda = "Milhões"
+    if max(dataList) > 10000000:
+        legenda = "Dezenas de Milhões"
+    if max(dataList) > 100000000:
+        legenda = "Centenas de Milhões"
+    if max(dataList) > 1000000000:
+        legenda = "Bilhões"
+    if max(dataList) > 10000000000:
+        legenda = "Dezenas de Bilhões"
+    dataList, nameCountries = zip(*sorted(zip(dataList, nameCountries)))    
+    plotGraph(nameCountries, dataList, f"{prop} em {legenda}")
     return dataList, nameCountries
 
 def soma(data):
@@ -125,7 +146,6 @@ def ApresentaDado(dict, prop):
         for count in range(len(dataList)):
             if dataList[count] != "" and dataList[count] != " " and dataList[count] != None:
                 print(f"{nameCountries[count]} - {prop} = {(dataList[count]):,}")
-
             else: print(f"{nameCountries[count]} não possui essa informação registrada na wikpedia")
 
 def ApresentaMedia(dict, prop, willPrint=True):
@@ -214,7 +234,7 @@ def Amplitude(dict, prop):
 def functionByChoice(defName, dict):
     choice = input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
     while choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5":
-        input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
+        choice=input("\n Selecione uma das opções abaixo para visualizar todos os dados disponíveis \n1-Gross Domestic Product\n2-Human Development Index\n3-Unemployement Rate\n4-Retirement Age\n5-Population\n ")
     if choice == "1":
         choice ="Gross Domestic Product"
     if choice == "2":
