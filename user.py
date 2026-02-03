@@ -103,29 +103,11 @@ def pegaDado(dict, prop):
     dataList = []
     nameCountries = []
     for keys in dict.keys():
-        dataList.append(float(dict[keys][prop])) 
-        nameCountries.append(keys)
-
-    if max(dataList) > 100:
-        legenda = "Centenas"
-    if max(dataList) > 1000:
-        legenda = "Milhares"
-    if max(dataList) > 10000:
-        legenda = "Dezenas de Milhares"
-    if max(dataList) > 100000:
-        legenda = "Centenas de Milhares"
-    if max(dataList) > 1000000:
-        legenda = "Milhões"
-    if max(dataList) > 10000000:
-        legenda = "Dezenas de Milhões"
-    if max(dataList) > 100000000:
-        legenda = "Centenas de Milhões"
-    if max(dataList) > 1000000000:
-        legenda = "Bilhões"
-    if max(dataList) > 10000000000:
-        legenda = "Dezenas de Bilhões"
-    dataList, nameCountries = zip(*sorted(zip(dataList, nameCountries)))    
-    plotGraph(nameCountries, dataList, f"{prop} em {legenda}")
+        try:
+            dataList.append(float(dict[keys][prop])) 
+            nameCountries.append(keys)
+        except:
+            continue
     return dataList, nameCountries
 
 def soma(data):
@@ -143,10 +125,34 @@ def ApresentaPais(dict, prop):
 def ApresentaDado(dict, prop):
         dataList = pegaDado(dict, prop)[0]
         nameCountries = pegaDado(dict, prop)[1]
+
+        legenda = "Valores"
+        if max(dataList) > 100:
+            legenda = "Centenas"
+        if max(dataList) > 1000:
+            legenda = "Milhares"
+        if max(dataList) > 10000:
+            legenda = "Dezenas de Milhares"
+        if max(dataList) > 100000:
+            legenda = "Centenas de Milhares"
+        if max(dataList) > 1000000:
+            legenda = "Milhões"
+        if max(dataList) > 10000000:
+            legenda = "Dezenas de Milhões"
+        if max(dataList) > 100000000:
+            legenda = "Centenas de Milhões"
+        if max(dataList) > 1000000000:
+            legenda = "Bilhões"
+        if max(dataList) > 10000000000:
+            legenda = "Dezenas de Bilhões"
+    
         for count in range(len(dataList)):
             if dataList[count] != "" and dataList[count] != " " and dataList[count] != None:
                 print(f"{nameCountries[count]} - {prop} = {(dataList[count]):,}")
             else: print(f"{nameCountries[count]} não possui essa informação registrada na wikpedia")
+        dataList, nameCountries = zip(*sorted(zip(dataList, nameCountries)))  
+
+        plotGraph(nameCountries, dataList, f"{prop} em {legenda}")
 
 def ApresentaMedia(dict, prop, willPrint=True):
     rawDataList = pegaDado(dict, prop)[0]
