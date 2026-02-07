@@ -1,6 +1,6 @@
-import requests
-import matplotlib.pyplot as plt
-import numpy as np
+import requests # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+import numpy as np # type: ignore
 
 
 def getData(title):
@@ -110,9 +110,22 @@ def plotGraph(paises, dataList, prop):
         legenda = "Bilhões"
     if max(dataList) > 10000000000:
         legenda = "Dezenas de Bilhões"
+    if max(dataList) > 100000000000:
+        legenda = "Centenas de Bilhões"
+    if max(dataList) > 1000000000000:
+        legenda = "Trilhões"
+    if max(dataList) > 10000000000000:
+        legenda = "Dezenas de Trilhões"
+    if max(dataList) > 100000000000000:
+        legenda = "Centenas de Trilhões"
+
+
     plt.figure(figsize=(10,10))
     plt.plot(paises,dataList, 'r--', label=prop)
-    plt.title(f'{prop} em {legenda}')
+    if prop == "Gross Domestic Product": 
+        plt.title(f'{prop} em {legenda} de Dólares')
+    else:
+        plt.title(f'{prop} em {legenda}')
     plt.ylabel(f"{legenda}")
     plt.xlabel("Paises")
     plt.legend()
